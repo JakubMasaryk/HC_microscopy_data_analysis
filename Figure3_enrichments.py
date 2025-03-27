@@ -26,15 +26,15 @@ strength_threshold= 1.25
 fdr_threshold= 0.05
 
 #mysql server connection parameters
-mysql_username= 'root'
-mysql_password= 'poef.qve5353'
-mysql_hostname= '127.0.0.1'
-mysql_port= '3306'
+mysql_username= ''
+mysql_password= ''
+mysql_hostname= ''
+mysql_port= ''
 
 #paths to folders
-path_to_folder_decreased_formation= r"C:\Users\Jakub\Desktop\clusters\1_decreased_formation\decreased_formation_enrichments"
-path_to_folder_disrupted_relocation_and_fusion= r"C:\Users\Jakub\Desktop\clusters\2_disrupted_relocation_and_fusion\disrupted_relocation_and_fusion_enrichments"
-path_to_folder_slower_clearance= r"C:\Users\Jakub\Desktop\clusters\3_slower_clearance\slower_clearance_enrichments"
+path_to_folder_decreased_formation= r"...\decreased_formation_enrichments"
+path_to_folder_disrupted_relocation_and_fusion= r"...\disrupted_relocation_and_fusion_enrichments"
+path_to_folder_slower_clearance= r"...\slower_clearance_enrichments"
 
 
 # -----------------------------------------------------------------------------------------------------------
