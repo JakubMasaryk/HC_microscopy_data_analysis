@@ -65,14 +65,14 @@ p_value_threshold= 0.0001
 perc_sign_diff_timepoints_thre= 0.80
 
 #paths to files (if applicable)
-strains= r"C:\Users\Jakub\Desktop\figures\Figure_3\Fig3_data\96database_complete.xlsx" #file, path to strain-collection database
-experimental_data= r"C:\Users\Jakub\Desktop\figures\Figure_3\Fig3_data\all_plates(summary by well)" #folder
+strains= r"...\96database_complete.xlsx" #file, path to strain-collection database
+experimental_data= r"...\all_plates(summary by well)" #folder
 
 #mysql server connection parameters
-username= 'root'
-password= 'poef.qve5353'
-hostname= '127.0.0.1'
-port= '3306'
+username= ''
+password= ''
+hostname= ''
+port= ''
 
 
 # ---------------------------------------------------------------------------------------
