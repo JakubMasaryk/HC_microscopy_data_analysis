@@ -45,13 +45,13 @@ selected_timepont= 315 #late relocation & fusion stage
 reference_timepoint= 98 #late formation stage
 
 #mysql db access (fill in accordingly, or fill directly when calling 'load_from_sql_db')
-mysql_username= 'root'
-mysql_password= 'poef.qve5353'
-mysql_hostname= '127.0.0.1'
-mysql_port= '3306'
+mysql_username= ''
+mysql_password= ''
+mysql_hostname= ''
+mysql_port= ''
 
 #path to the raw file (if applicable)
-path_to_raw_file= r"C:\Users\Jakub\Desktop\figures\Figure_2\data\Fig2_data.csv"
+path_to_raw_file= r"...\Fig2_data.csv"
 
 
 # ----------------------------------------------------------------------------------------------------------------
