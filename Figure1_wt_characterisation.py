@@ -57,8 +57,8 @@ hostname= '127.0.0.1'
 port= '3306'
 
 #paths to files
-path_to_raw_file= r"C:\Users\Jakub\Desktop\figures\Figure_1\data\Fig1_S1_data.csv"
-path_to_plate_file= r"C:\Users\Jakub\Desktop\figures\Figure_1\data\Fig1_S1_plate_layout.xlsx"
+path_to_raw_file= r"...\Fig1_S1_data.csv"
+path_to_plate_file= r"...\Fig1_S1_plate_layout.xlsx"
 
 
 # ------------------------------------------------------------------
