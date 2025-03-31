@@ -41,8 +41,8 @@ initial_delay= 7
 frequency= 3.5
 
 #timepoints to analyse
-selected_timepont= 315 #late relocation & fusion stage
-reference_timepoint= 98 #late formation stage
+selected_timepont= 297.5 #late relocation & fusion stage
+reference_timepoint= 70 #late formation stage
 
 #mysql db access (fill in accordingly, or fill directly when calling 'load_from_sql_db')
 mysql_username= ''
