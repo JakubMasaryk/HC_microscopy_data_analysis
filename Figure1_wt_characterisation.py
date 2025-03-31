@@ -51,10 +51,10 @@ microscopy_interval= 3.5
 microscopy_initital_delay= 7
 
 #mysql server connection parameters
-username= 'root'
-password= 'poef.qve5353'
-hostname= '127.0.0.1'
-port= '3306'
+username= ''
+password= ''
+hostname= ''
+port= ''
 
 #paths to files
 path_to_raw_file= r"...\Fig1_S1_data.csv"
