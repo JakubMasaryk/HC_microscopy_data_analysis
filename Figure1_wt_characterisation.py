@@ -301,14 +301,14 @@ def Figure_1(data, single_timepoints, stage_bins,  export= False):
             lw= 1,
             label= 'As-exposed cells')
 
-    x_coor_ctrl= x - width/2 + 0.025
+    x_coor_ctrl= x - width/2 + 0.02
     y_coor_ctrl= selected_timepoints_control.PercentageOfCellsContainingAggregatesMean + selected_timepoints_control.PercentageOfCellsContainingAggregatesMOE95 + 4
     coordinates_ctrl= [[x, y] for x, y in zip(x_coor_ctrl, y_coor_ctrl)]
     for i, c in enumerate(coordinates_ctrl):
         cx,cy = c[0], c[1]
         ax1.text(cx, cy, f'{round(selected_timepoints_control.p_value, 4).fillna("").iloc[i]}', ha= 'center', rotation = 90)
 
-    x_coor_exp= x + width/2 + 0.025
+    x_coor_exp= x + width/2 + 0.02
     y_coor_exp= selected_timepoints_exposed.PercentageOfCellsContainingAggregatesMean + selected_timepoints_exposed.PercentageOfCellsContainingAggregatesMOE95 + 4
     coordinates_exp= [[x, y] for x, y in zip(x_coor_exp, y_coor_exp)]
     for i, c in enumerate(coordinates_exp):
@@ -434,7 +434,7 @@ _20250106.TimepointMinutes.unique()
 # In[45]:
 
 
-Figure_1(_20250106, [14, 35, 70, 147, 224, 294, 385, 462, 539], calculated_stage_bins, export= False)
+Figure_1(_20250106, [14, 35, 70, 119, 182, 238, 301, 357, 427, 483, 539], calculated_stage_bins, export= False)
 
 
 # In[ ]:
