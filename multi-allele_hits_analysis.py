@@ -49,10 +49,10 @@ plt.rcParams['figure.dpi'] = 1000
 
 
 #mysql server connection parameters
-username= 'root'
-password= 'poef.qve5353'
-hostname= '127.0.0.1'
-port= '3306'
+username= ''
+password= ''
+hostname= ''
+port= ''
 
 #mysql server connection
 connection_string = f"mysql+pymysql://{username}:{password}@{hostname}:{port}/hc_microscopy_data_v2"
