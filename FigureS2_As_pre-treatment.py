@@ -25,17 +25,19 @@ from sqlalchemy import create_engine
 
 
 plt.rcParams["legend.frameon"] = False
-plt.rcParams['legend.fontsize'] = 15
+plt.rcParams['legend.fontsize'] = 12
 
-plt.rcParams['axes.labelsize'] = 20
+plt.rcParams['axes.labelsize'] = 19
 plt.rcParams['axes.labelweight'] = 'bold'
 
-plt.rcParams['xtick.labelsize'] = 18
-plt.rcParams['ytick.labelsize'] = 18  
+plt.rcParams['xtick.labelsize'] = 16
+plt.rcParams['ytick.labelsize'] = 16  
 
-plt.rcParams['font.size'] = 16
+plt.rcParams['font.size'] = 12
 
 plt.rcParams['figure.dpi'] = 1000
+
+plt.rcParams['font.family'] = 'Calibri'
 
 
 # ----------------------------------------------------------------------
@@ -176,7 +178,7 @@ def pre_treated_wt_analysis(data, single_timepoints, export=False):
     As_prt_As_con= data.loc[(data.PreTreatment=='0.5 mM As') & (data.Conditions=='0.5 mM As')] #pre-treatment: 60 mins YNB-C 0.5 mM As, microscopy conditions: YNB-C 0.5 mM As
     
     #plot layout
-    fig= plt.figure(figsize= (19.6, 18), constrained_layout= True)
+    fig= plt.figure(figsize= (13.5, 13.5), constrained_layout= True)
     gs= gridspec.GridSpec(5, 4, figure=fig)
     ax1= fig.add_subplot(gs[0:2, 0:2])
     ax2= fig.add_subplot(gs[0:2, 2:4])
