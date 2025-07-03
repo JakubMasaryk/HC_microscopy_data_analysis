@@ -470,7 +470,7 @@ data.head()
 
 # ------------------------------------------------------------------------
 # __Figure 2__
-single_cell_data_foci_count_kde(dataset= data, export= False)
+single_cell_data_foci_count_kde(data)
 
 single_cell_data_foci_count_heatmap(data)
 
