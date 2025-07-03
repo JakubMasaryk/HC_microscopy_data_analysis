@@ -41,6 +41,9 @@ mysql_port= ''
 #path to the raw file (if applicable)
 path_to_raw_file= r""
 
+#path for figure export
+path_for_export= r""
+
 
 # ----------------------------------------------------------------------------------------------------------------
 # __data load and process functions__
@@ -216,7 +219,7 @@ def single_cell_data_foci_count_kde(dataset, sel_tmpt1=selected_timepoint_1, sel
     
     #export
     if export== True:
-        plt.savefig(r"C:\Users\Jakub\Desktop\Figure2.png", bbox_inches='tight')
+        plt.savefig(path_for_export, bbox_inches='tight')
     elif export== False:
         pass;
     else:
@@ -284,7 +287,7 @@ def single_cell_data_foci_count_heatmap(data, selected_stage_olr, sel_tmpt1=sele
     
     #export
     if export== True:
-        plt.savefig(r"C:\Users\Jakub\Desktop\Figure2.png", bbox_inches='tight')
+        plt.savefig(path_for_export, bbox_inches='tight')
     elif export== False:
         pass;
     else:
@@ -407,7 +410,7 @@ def single_cell_data_foci_count_barchart(data, sel_tmpt1=selected_timepoint_1, s
     
     #export
     if export== True:
-        plt.savefig(r"C:\Users\Jakub\Desktop\Figure2.png", bbox_inches='tight')
+        plt.savefig(path_for_export, bbox_inches='tight')
     elif export== False:
         pass;
     else:
