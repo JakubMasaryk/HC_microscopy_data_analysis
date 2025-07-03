@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# * __libraries__
-
-# In[5]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -18,57 +10,47 @@ from sqlalchemy import create_engine
 
 
 # ---------------------------------------------------------
-
 # * __params__
-
-# In[8]:
-
-
 plt.rcParams["legend.frameon"] = False
-plt.rcParams['legend.fontsize'] = 15
+plt.rcParams['legend.fontsize'] = 12
 
-plt.rcParams['axes.labelsize'] = 20
+plt.rcParams['axes.labelsize'] = 19
 plt.rcParams['axes.labelweight'] = 'bold'
 
-plt.rcParams['xtick.labelsize'] = 18
-plt.rcParams['ytick.labelsize'] = 18  
+plt.rcParams['xtick.labelsize'] = 16
+plt.rcParams['ytick.labelsize'] = 16  
 
-plt.rcParams['font.size'] = 16
+plt.rcParams['font.size'] = 12
 
 plt.rcParams['figure.dpi'] = 1000
 
+plt.rcParams['font.family'] = 'Calibri'
+
 
 # ---------------------------------------------------------------------------------
-
 # * __inputs__
-
-# In[11]:
-
-
-#microscopy parameters
+###microscopy parameters
 initital_timepoints_skippped= 1
 microscopy_interval= 3.5
 microscopy_initital_delay= 7
 
-#mysql server connection parameters
+###mysql server connection parameters
 username= ''
 password= ''
 hostname= ''
 port= ''
 
-#paths to files
-path_to_raw_file= r"...\Fig1_S1_data.csv"
-path_to_plate_file= r"...\Fig1_S1_plate_layout.xlsx"
+###paths to files
+#processed file
+path_to_processed_file= r"C:\Users\Jakub\Desktop\figures\Figure_1\data\Fig1_processed_data.csv"
+#raw file (includes the plate layout lookup table)
+path_to_raw_file= r"C:\Users\Jakub\Desktop\figures\Figure_1\data\Fig1_S1_raw_data.csv"
+path_to_plate_file= r"C:\Users\Jakub\Desktop\figures\Figure_1\data\Fig1_S1_plate_layout.xlsx"
 
 
 # ------------------------------------------------------------------
-
 # * __data processiong functions__
-
-# In[14]:
-
-
-#load from a file, data processing
+#load from a raw file, data processing
 def raw_data_Load_and_processing_file(path, initial_delay, frequency, initial_timepoints_skipped):
     dataset= pd.read_csv(path,
                          usecols= ['WELL LABEL', 'T', 'Cells Count wv1', 'Granules Cells with Org wv2', 'Granules Org per Cell wv2', 'Granules Area wv2'],
@@ -80,6 +62,12 @@ def raw_data_Load_and_processing_file(path, initial_delay, frequency, initial_ti
     dataset= dataset.reindex(columns= ['Well', 'Timepoint', 'TimepointHours', 'TimepointMinutes', 'NumberOfCells', 'NumberOfCellsContainingAggregates','PercentageOfCellsContainingAggregates', 'AverageNumberOfAggregatesPerCell', 'AverageSizeOfSingleAggregates'])    
     dataset=dataset.loc[dataset.Timepoint > initial_timepoints_skipped]
     dataset= dataset.loc[dataset.Well.isin(['N03', 'N04', 'O03', 'O04', 'P03', 'P04'])]
+    return dataset
+
+#load from a processed-data file
+def procesed_data_Load_file(path, initial_timepoints_skipped):
+    dataset= pd.read_csv(path)    
+    dataset=dataset.loc[dataset.Timepoint > initial_timepoints_skipped]
     return dataset
 
 #load from db
@@ -103,13 +91,19 @@ def raw_data_Load_and_processing_db(initial_timepoints_skipped):
     
     return data
 
-# 'db' to load from mysql database, 'raw file' to load from a file
+# 'db' to load from mysql database, 'raw file' to load from a file, 'processed file' to load the processed file
+#takes pre-defined parameters from the section 'Inputs' as arguments
 def data_load(source):
     if source=='db':
         data= raw_data_Load_and_processing_db(initital_timepoints_skippped)
         return data
     elif source=='raw file':
         data= raw_data_Load_and_processing_file(path_to_raw_file, microscopy_initital_delay, microscopy_interval, initital_timepoints_skippped)
+        plate= pd.read_excel(path_to_plate_file)
+        data= data.merge(plate, how= 'left', on='Well')
+        return data
+    elif source=='processed file':
+        data= procesed_data_Load_file(path_to_processed_file, initital_timepoints_skippped)
         return data
     else:
         raise ValueError(f"Invalid source input: '{source}'. Expected: 'db' or 'raw file'.")
@@ -166,6 +160,9 @@ def repeats_group_mean_std_moe95(data):
 #selects a combination with the lowest deviation of cc from 1 as perfect positive correlation (for formation and clearance) and from -1 as a perfect negative correlation (for relocation &fusion)
 def stage_bins(data, step= 2, minimal_formation_length= 30, maximal_formation_end= 120, minimal_rf_length= 60, maximal_rf_end= 300):
     
+    #only exposed data
+    data= data.loc[data.Conditions=='0.5 mM As']
+    
     #potential time ranges 
     potential_formation_end= np.arange(data.TimepointMinutes.min() + minimal_formation_length, maximal_formation_end + step, step)
     f_rf_end_combinations= [[x, i] for x in potential_formation_end for i in np.arange(x + minimal_rf_length, maximal_rf_end + step, step)]   
@@ -205,13 +202,10 @@ def stage_bins(data, step= 2, minimal_formation_length= 30, maximal_formation_en
     return stage_bins
 
 
+# ------------------------------------------------------------------
 # * __visualisation functions__
-
-# In[16]:
-
-
 def Figure_1(data, single_timepoints, stage_bins,  export= False):
-    fig= plt.figure(figsize= (19.6, 14.4), constrained_layout= True)
+    fig= plt.figure(figsize= (12.5, 10), constrained_layout= True)
     gs= gridspec.GridSpec(2,2, figure=fig)
     
     #gridspec
@@ -301,14 +295,14 @@ def Figure_1(data, single_timepoints, stage_bins,  export= False):
             lw= 1,
             label= 'As-exposed cells')
 
-    x_coor_ctrl= x - width/2 + 0.02
+    x_coor_ctrl= x - width/2 + 0.02 ###
     y_coor_ctrl= selected_timepoints_control.PercentageOfCellsContainingAggregatesMean + selected_timepoints_control.PercentageOfCellsContainingAggregatesMOE95 + 4
     coordinates_ctrl= [[x, y] for x, y in zip(x_coor_ctrl, y_coor_ctrl)]
     for i, c in enumerate(coordinates_ctrl):
         cx,cy = c[0], c[1]
         ax1.text(cx, cy, f'{round(selected_timepoints_control.p_value, 4).fillna("").iloc[i]}', ha= 'center', rotation = 90)
 
-    x_coor_exp= x + width/2 + 0.02
+    x_coor_exp= x + width/2 + 0.02 ###353♣
     y_coor_exp= selected_timepoints_exposed.PercentageOfCellsContainingAggregatesMean + selected_timepoints_exposed.PercentageOfCellsContainingAggregatesMOE95 + 4
     coordinates_exp= [[x, y] for x, y in zip(x_coor_exp, y_coor_exp)]
     for i, c in enumerate(coordinates_exp):
@@ -321,7 +315,7 @@ def Figure_1(data, single_timepoints, stage_bins,  export= False):
     ax1.set_ylim(-15, 115)
     ax1.set_xlabel('timepoint (min)', weight= 'bold')
     ax1.set_ylabel('percentage', weight= 'bold')
-    ax1.legend(frameon= False, ncol= 2)
+    ax1.legend(frameon= False, ncol= 1)
 
 
     #subplot 3
@@ -368,7 +362,8 @@ def Figure_1(data, single_timepoints, stage_bins,  export= False):
              linewidth= 2.5)
     ax2.set_xlabel('avg. no. of agg. per cell', weight= 'bold')
     ax2.set_ylabel('avg. size of a single agg.', weight= 'bold')
-    ax2.legend(frameon= False)
+    ax2.legend(frameon= True,
+               loc= 'lower right')
     
     
     #export
@@ -381,63 +376,20 @@ def Figure_1(data, single_timepoints, stage_bins,  export= False):
 
 
 # ------------------------------------------------------------
-
 # * __WT analysis__
-
-# In[19]:
-
-
-_20250106= data_load('raw file')
-
-
-# In[20]:
-
-
-_20250106_plate= pd.read_excel(path_to_plate_file)
-_20250106= _20250106.merge(_20250106_plate, how= 'left', on='Well')
-
-
-# In[21]:
-
-
+_20250106= data_load('processed file')
 _20250106= missing_values(_20250106)
-
-
-# In[22]:
-
-
 _20250106= repeats_group_mean_std_moe95(_20250106)
-
-
-# In[23]:
-
 
 calculated_stage_bins= stage_bins(_20250106)
 
-
-# In[24]:
-
-
-calculated_stage_bins
-
-
-# In[43]:
-
-
-_20250106.TimepointMinutes.unique()
+_20250106.head()
 
 
 # --------------------------------------------------------------------------------------------------
-
 # * __Figure 1__
-
-# In[45]:
-
-
 Figure_1(_20250106, [14, 35, 70, 119, 182, 238, 301, 357, 427, 483, 539], calculated_stage_bins, export= False)
 
-
-# In[ ]:
 
 
 
