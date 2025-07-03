@@ -1,11 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # * __libraries__
-
-# In[46]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -18,59 +11,46 @@ from sqlalchemy import create_engine
 
 
 # --------------------------------------------------------------------------------------------------
-
 # * __params__
-
-# In[49]:
-
-
 plt.rcParams["legend.frameon"] = False
 plt.rcParams['legend.fontsize'] = 12
-
 plt.rcParams['axes.labelsize'] = 19
 plt.rcParams['axes.labelweight'] = 'bold'
-
 plt.rcParams['xtick.labelsize'] = 16
 plt.rcParams['ytick.labelsize'] = 16  
-
 plt.rcParams['font.size'] = 12
-
 plt.rcParams['figure.dpi'] = 1000
-
 plt.rcParams['font.family'] = 'Calibri'
 
 
 # ----------------------------------------------------------------------
-
 # * __inputs__
-
-# In[52]:
-
-
-#microscopy parameters
+###microscopy parameters
 initital_timepoints_skippped= 1
 microscopy_interval= 3.5
 microscopy_initital_delay= 7
 
-#mysql server connection parameters
+###mysql server connection parameters
 username= ''
 password= ''
 hostname= ''
 port= ''
 
-#paths to files
-path_to_raw_file= r"...\FigS2_data.csv"
+###paths to files
+#processed file
+path_to_processed_file= r"...\FigS2_processed_data.csv"
+#raw file 
+path_to_raw_file= r"...\FigS2_raw_data.csv"
+#plate layout lookup table
 path_to_plate_file= r"...\FigS2_plate_layout.xlsx"
+
+###path for export
+path_for_export= r"...\FigureS2.png"
 
 
 # ------------------------------------
-
 # * __data processing functions__
-
-# In[55]:
-
-
-#load from a file, data processing
+#load from a raw file, data processing
 def raw_data_Load_and_processing_file(path, initial_delay, frequency, initial_timepoints_skipped):
     dataset= pd.read_csv(path,
                          usecols= ['WELL LABEL', 'T', 'Cells Count wv1', 'Granules Cells with Org wv2', 'Granules Org per Cell wv2', 'Granules Area wv2'],
@@ -82,6 +62,12 @@ def raw_data_Load_and_processing_file(path, initial_delay, frequency, initial_ti
     dataset= dataset.reindex(columns= ['Well', 'Timepoint', 'TimepointHours', 'TimepointMinutes', 'NumberOfCells', 'NumberOfCellsContainingAggregates','PercentageOfCellsContainingAggregates', 'AverageNumberOfAggregatesPerCell', 'AverageSizeOfSingleAggregates'])    
     dataset=dataset.loc[dataset.Timepoint > initial_timepoints_skipped]
     dataset= dataset.loc[dataset.Well.isin(['N05', 'N06', 'N07', 'N08', 'O05', 'O06', 'O07', 'O08', 'P05', 'P06', 'P07', 'P08'])]
+    return dataset
+
+#load from a processed-data file
+def procesed_data_Load_file(path, initial_timepoints_skipped):
+    dataset= pd.read_csv(path)    
+    dataset=dataset.loc[dataset.Timepoint > initial_timepoints_skipped]
     return dataset
 
 #load from db
@@ -105,13 +91,24 @@ def raw_data_Load_and_processing_db(initial_timepoints_skipped):
     
     return data
 
-# 'db' to load from mysql database, 'raw file' to load from a file
+# 'db' to load from mysql database, 'raw file' to load from a file, 'processed file' to load the processed file
+#datasets merge to 'plate' lookup table 
+#take pre-defined parameters from the section 'Inputs' as arguments
 def data_load(source):
     if source=='db':
         data= raw_data_Load_and_processing_db(initital_timepoints_skippped)
+        plate= pd.read_excel(path_to_plate_file)
+        data= data.merge(plate, how= 'left', on='Well')
         return data
     elif source=='raw file':
         data= raw_data_Load_and_processing_file(path_to_raw_file, microscopy_initital_delay, microscopy_interval, initital_timepoints_skippped)
+        plate= pd.read_excel(path_to_plate_file)
+        data= data.merge(plate, how= 'left', on='Well')
+        return data
+    elif source=='processed file':
+        data= procesed_data_Load_file(path_to_processed_file, initital_timepoints_skippped)
+        plate= pd.read_excel(path_to_plate_file)
+        data= data.merge(plate, how= 'left', on='Well')
         return data
     else:
         raise ValueError(f"Invalid source input: '{source}'. Expected: 'db' or 'raw file'.")
@@ -150,8 +147,8 @@ def single_t_test(column1, column2):
 #grouping repeats for each mutant-condition-timepoint (into list), calculating mean, std and margins of error (for CL 95%) for each group
 def repeats_group_mean_std_moe95(data):
     data= data.groupby(['Strain', 'PreTreatment', 'Conditions', 'Timepoint', 'TimepointHours', 'TimepointMinutes'])[['PercentageOfCellsContainingAggregates', 'AverageNumberOfAggregatesPerCell', 'AverageSizeOfSingleAggregates']].agg({'PercentageOfCellsContainingAggregates':list,
-                                                                                                                                                                                                                                         'AverageNumberOfAggregatesPerCell':list,
-                                                                                                                                                                                                                                         'AverageSizeOfSingleAggregates':list}).reset_index()
+                                                                                                                                                                                                                        'AverageNumberOfAggregatesPerCell':list,
+                                                                                                                                                                                                                        'AverageSizeOfSingleAggregates':list}).reset_index()
     data= data.assign(PercentageOfCellsContainingAggregatesMean= data.PercentageOfCellsContainingAggregates.apply(lambda x: np.array(x).mean()),
                       PercentageOfCellsContainingAggregatesSTD= data.PercentageOfCellsContainingAggregates.apply(lambda x: np.array(x).std(ddof= 1)),
                       PercentageOfCellsContainingAggregatesMOE95= data.PercentageOfCellsContainingAggregates.apply(lambda x: t_margin_of_error_cl95(x)),
@@ -165,10 +162,6 @@ def repeats_group_mean_std_moe95(data):
 
 
 # * __visualisation functions__
-
-# In[57]:
-
-
 def pre_treated_wt_analysis(data, single_timepoints, export=False):
     
     #data split
@@ -430,7 +423,7 @@ def pre_treated_wt_analysis(data, single_timepoints, export=False):
     
     #export
     if export== True:
-        plt.savefig(r"C:\Users\Jakub\Desktop\FigureS2.png", dpi= 1000)
+        plt.savefig(path_for_export, dpi= 1000)
     elif export== False:
         pass;
     else:
@@ -438,58 +431,14 @@ def pre_treated_wt_analysis(data, single_timepoints, export=False):
 
 
 # ----------------------------------------------------------------------------
-
 # * __pre-treated WT analysis__
-
-# In[60]:
-
-
-_20250106= data_load('raw file')
-
-
-# In[61]:
-
-
-_20250106_plate= pd.read_excel(path_to_plate_file)
-_20250106= _20250106.merge(_20250106_plate, how= 'left', on='Well')
-
-
-# In[62]:
-
-
+_20250106= data_load('processed file')
 _20250106= missing_values(_20250106)
-
-
-# In[63]:
-
-
-# _20250106= time_range_hours(_20250106, 0, 9)
-
-
-# In[64]:
-
-
 _20250106= repeats_group_mean_std_moe95(_20250106)
-
-
-# In[65]:
-
 
 _20250106.head(5)
 
 
 # ------------------------------------------------------------------------------------------------------------
-
 # * __visualisation__
-
-# In[68]:
-
-
 pre_treated_wt_analysis(_20250106, [14, 42, 91, 154, 238, 308, 420, 546], export= False)
-
-
-# In[ ]:
-
-
-
-
