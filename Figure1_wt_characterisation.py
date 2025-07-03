@@ -95,10 +95,13 @@ def raw_data_Load_and_processing_db(initial_timepoints_skipped):
     return data
 
 # 'db' to load from mysql database, 'raw file' to load from a file, 'processed file' to load the processed file
-#takes pre-defined parameters from the section 'Inputs' as arguments
+#datasets merge to 'plate' lookup table 
+#take pre-defined parameters from the section 'Inputs' as arguments
 def data_load(source):
     if source=='db':
         data= raw_data_Load_and_processing_db(initital_timepoints_skippped)
+        plate= pd.read_excel(path_to_plate_file)
+        data= data.merge(plate, how= 'left', on='Well')
         return data
     elif source=='raw file':
         data= raw_data_Load_and_processing_file(path_to_raw_file, microscopy_initital_delay, microscopy_interval, initital_timepoints_skippped)
@@ -107,6 +110,8 @@ def data_load(source):
         return data
     elif source=='processed file':
         data= procesed_data_Load_file(path_to_processed_file, initital_timepoints_skippped)
+        plate= pd.read_excel(path_to_plate_file)
+        data= data.merge(plate, how= 'left', on='Well')
         return data
     else:
         raise ValueError(f"Invalid source input: '{source}'. Expected: 'db' or 'raw file'.")
