@@ -42,10 +42,10 @@ port= ''
 
 ###paths to files
 #processed file
-path_to_processed_file= r"C:\Users\Jakub\Desktop\figures\Figure_1\data\Fig1_processed_data.csv"
+path_to_processed_file= r""
 #raw file (includes the plate layout lookup table)
-path_to_raw_file= r"C:\Users\Jakub\Desktop\figures\Figure_1\data\Fig1_S1_raw_data.csv"
-path_to_plate_file= r"C:\Users\Jakub\Desktop\figures\Figure_1\data\Fig1_S1_plate_layout.xlsx"
+path_to_raw_file= r""
+path_to_plate_file= r""
 
 
 # ------------------------------------------------------------------
