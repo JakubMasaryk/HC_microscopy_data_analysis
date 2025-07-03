@@ -47,6 +47,9 @@ path_to_processed_file= r""
 path_to_raw_file= r""
 path_to_plate_file= r""
 
+###path for export
+path_for_export= r""
+
 
 # ------------------------------------------------------------------
 # * __data processiong functions__
@@ -368,7 +371,7 @@ def Figure_1(data, single_timepoints, stage_bins,  export= False):
     
     #export
     if export== True:
-        plt.savefig(r"C:\Users\Jakub\Desktop\Figure1.png", dpi= 1000)
+        plt.savefig(path_for_export, dpi= 1000)
     elif export== False:
         pass;
     else:
