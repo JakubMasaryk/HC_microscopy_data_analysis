@@ -9,6 +9,7 @@ import statsmodels.api as sm
 from statsmodels.miscmodels.ordinal_model import OrderedModel
 
 
+# -----------------------------------------------------------------------------------------------------------------------------------
 # __params__
 plt.rcParams["legend.frameon"] = False
 plt.rcParams['legend.fontsize'] = 15
@@ -19,6 +20,7 @@ plt.rcParams['ytick.labelsize'] = 18
 plt.rcParams['figure.dpi'] = 1000
 
 
+# -----------------------------------------------------------------------------------------------------------------------------------
 # __inputs__
 #microscopy parameters
 initial_delay= 7
@@ -41,14 +43,9 @@ path_to_raw_file= r""
 
 
 # ----------------------------------------------------------------------------------------------------------------
-
 # __data load and process functions__
 
 # * __from mysql database__
-
-# In[10]:
-
-
 def load_from_sql_db(username= mysql_username, password=mysql_password, hostname= mysql_hostname, port= mysql_port, sel_tmpt1=selected_timepoint_1, sel_tmpt2= selected_timepoint_2, sel_tmpt3= selected_timepoint_3, sel_tmpt4= selected_timepoint_4):
     
     #connection
@@ -90,12 +87,7 @@ def load_from_sql_db(username= mysql_username, password=mysql_password, hostname
     
     return data
 
-
 # * __from raw file__
-
-# In[12]:
-
-
 def load_from_file(path =path_to_raw_file, sel_tmpt1=selected_timepoint_1, sel_tmpt2= selected_timepoint_2, sel_tmpt3= selected_timepoint_3, sel_tmpt4= selected_timepoint_4, init_del= initial_delay, freq= frequency):
     
     #data load
@@ -140,17 +132,8 @@ def load_from_file(path =path_to_raw_file, sel_tmpt1=selected_timepoint_1, sel_t
     return data
 
 
-# In[13]:
-
-
-# load_from_file().equals(load_from_sql_db())
-
-
+# -----------------------------------------------------------------------------------------------------------------------------------
 # * __load__
-
-# In[15]:
-
-
 def data_load(source):
     if source=='db':
         data= load_from_sql_db()
@@ -163,12 +146,7 @@ def data_load(source):
 
 
 # -----------------------------------------------------------------------------------------------------------------------------------
-
 # __data visualisation function__
-
-# In[213]:
-
-
 #agg counts per single cells: KDE plots
 def single_cell_data_foci_count_kde(dataset, sel_tmpt1=selected_timepoint_1, sel_tmpt2= selected_timepoint_2, sel_tmpt3= selected_timepoint_3, sel_tmpt4= selected_timepoint_4, export= False):
 
@@ -247,7 +225,10 @@ def single_cell_data_foci_count_kde(dataset, sel_tmpt1=selected_timepoint_1, sel
         
         
 #agg cunts per single cells: heatmap
-def single_cell_data_foci_count_heatmap(data, sel_tmpt1=selected_timepoint_1, sel_tmpt2= selected_timepoint_2, sel_tmpt3= selected_timepoint_3, sel_tmpt4= selected_timepoint_4, export= False):
+def single_cell_data_foci_count_heatmap(data, selected_stage_olr, sel_tmpt1=selected_timepoint_1, sel_tmpt2= selected_timepoint_2, sel_tmpt3= selected_timepoint_3, sel_tmpt4= selected_timepoint_4, export= False):
+    
+    #calculate the p-value using OLR (comparing ref group LF to selected stage (prefferably LRF))
+    p_val= ordinal_log_regression_single_stage(data, selected_stage= selected_stage_olr)
     
     #label selected timepoints
     labels_dict= {sel_tmpt1: f'LF', # late-formation
@@ -277,7 +258,7 @@ def single_cell_data_foci_count_heatmap(data, sel_tmpt1=selected_timepoint_1, se
     data_percentage= data_percentage.set_index('timepoint_label')
     
     # visualising
-    fig, ax= plt.subplots(figsize= (12, 8))
+    fig, ax= plt.subplots(figsize=(6.25, 5))
     sns.heatmap(data_percentage,
                 cmap= 'coolwarm',                
                 annot= True,
@@ -285,10 +266,21 @@ def single_cell_data_foci_count_heatmap(data, sel_tmpt1=selected_timepoint_1, se
                 ax= ax,
                 linecolor= 'white',
                 linewidths= 1,
-                annot_kws={"size": 18},
+                annot_kws={"size": 15},
                 cbar= False)
-    ax.set_xlabel('number of agg. per cell')
+    ax.set_xlabel('no. of agg.')
     ax.set_ylabel('stage')
+    ax.set_yticklabels(data.timepoint_label.unique(), rotation= 0)
+    
+    #significance symbol
+    if p_val >= 0.05:
+        ax.text(1.075, 0.5, '-', va='center', ha='left', rotation= 90, transform=ax.transAxes, clip_on=False, fontsize= 20)
+    elif (p_val < 0.05) & (p_val >= 0.01):
+        ax.text(1.075, 0.5, '*', va='center', ha='left', rotation= 90, transform=ax.transAxes, clip_on=False, fontsize= 20)
+    elif (p_val < 0.01) & (p_val >= 0.001):
+        ax.text(1.075, 0.5, '**', va='center', ha='left', rotation= 90, transform=ax.transAxes, clip_on=False, fontsize= 20)
+    else:
+        ax.text(1.075, 0.5, '***', va='center', ha='left', rotation= 90, transform=ax.transAxes, clip_on=False, fontsize= 20)
     
     #export
     if export== True:
@@ -296,7 +288,7 @@ def single_cell_data_foci_count_heatmap(data, sel_tmpt1=selected_timepoint_1, se
     elif export== False:
         pass;
     else:
-        raise ValueError(f"Invalid export argument: '{export}'. Expected: boolean ('True' or 'False').")   
+        raise ValueError(f"Invalid export argument: '{export}'. Expected: boolean ('True' or 'False').")  
         
 
 #agg counts per single cells: barchart with cumulative percentage
@@ -423,12 +415,7 @@ def single_cell_data_foci_count_barchart(data, sel_tmpt1=selected_timepoint_1, s
 
 
 # ----------------------------------------------------------------------------------
-
 # __statistics functions__
-
-# In[211]:
-
-
 #ordinal logistic regression, comparing each stage (ERF, MRF and LRF) with reference group (LF)
 #return predictor coefficients and p-values
 def ordinal_log_regression(data, sel_tmpt1=selected_timepoint_1, sel_tmpt2= selected_timepoint_2, sel_tmpt3= selected_timepoint_3, sel_tmpt4= selected_timepoint_4):
@@ -473,48 +460,21 @@ def ordinal_log_regression(data, sel_tmpt1=selected_timepoint_1, sel_tmpt2= sele
 # --------------------------------------------------------------------------------------------
 
 # __data load__
-
-# In[21]:
-
-
 #specify data source: 'db' or 'raw file'
-data= data_load(source= 'db')
-
-
-# In[22]:
-
-
+data= data_load(source= 'raw file')
 data.head()
 
 
 # ------------------------------------------------------------------------
-
 # __Figure 2__
-
-# In[25]:
-
-
 single_cell_data_foci_count_kde(dataset= data, export= False)
 
-
-# In[191]:
-
-
 single_cell_data_foci_count_heatmap(data)
-
-
-# In[197]:
-
 
 single_cell_data_foci_count_barchart(data)
 
 
 # -----------------------------------------------------------------------------------------
-
 # __ordinal logistic_regression__
-
-# In[201]:
-
-
 ordinal_log_regression(data)
 
