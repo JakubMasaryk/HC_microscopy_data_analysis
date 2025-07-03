@@ -1,11 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # __libraries__
-
-# In[2]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -17,27 +10,16 @@ from statsmodels.miscmodels.ordinal_model import OrderedModel
 
 
 # __params__
-
-# In[4]:
-
-
 plt.rcParams["legend.frameon"] = False
 plt.rcParams['legend.fontsize'] = 15
-
 plt.rcParams['axes.labelsize'] = 20
 plt.rcParams['axes.labelweight'] = 'bold'
-
 plt.rcParams['xtick.labelsize'] = 18
 plt.rcParams['ytick.labelsize'] = 18  
-
 plt.rcParams['figure.dpi'] = 1000
 
 
 # __inputs__
-
-# In[6]:
-
-
 #microscopy parameters
 initial_delay= 7
 frequency= 3.5
@@ -49,13 +31,13 @@ selected_timepoint_3= 224 #mid-relocation & fusion stage
 selected_timepoint_4= 301 #late-relocation & fusion stagee
 
 #mysql db access (fill in accordingly, or fill directly when calling 'load_from_sql_db')
-mysql_username= 'root'
-mysql_password= 'poef.qve5353'
-mysql_hostname= '127.0.0.1'
-mysql_port= '3306'
+mysql_username= ''
+mysql_password= ''
+mysql_hostname= ''
+mysql_port= ''
 
 #path to the raw file (if applicable)
-path_to_raw_file= r"C:\Users\Jakub\Desktop\figures\Figure_2\data\Fig2_data.csv"
+path_to_raw_file= r""
 
 
 # ----------------------------------------------------------------------------------------------------------------
