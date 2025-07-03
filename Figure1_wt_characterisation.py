@@ -42,13 +42,13 @@ port= ''
 
 ###paths to files
 #processed file
-path_to_processed_file= r""
+path_to_processed_file= r"...\Fig1_processed_data.csv"
 #raw file (includes the plate layout lookup table)
-path_to_raw_file= r""
-path_to_plate_file= r""
+path_to_raw_file= r"...\Fig1_S1_raw_data.csv"
+path_to_plate_file= r"...\Fig1_S1_plate_layout.xlsx"
 
 ###path for export
-path_for_export= r""
+path_for_export= r"...\Figure1.png"
 
 
 # ------------------------------------------------------------------
