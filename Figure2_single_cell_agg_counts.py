@@ -39,10 +39,10 @@ mysql_hostname= ''
 mysql_port= ''
 
 #path to the raw file (if applicable)
-path_to_raw_file= r""
+path_to_raw_file= r"...\Fig2_data.csv"
 
 #path for figure export
-path_for_export= r""
+path_for_export= r"...\Figure2.png"
 
 
 # ----------------------------------------------------------------------------------------------------------------
