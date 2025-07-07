@@ -5,14 +5,14 @@
 #     - relational database and needs to be created and data uploaded prior to data load (see: https://github.com/JakubMasaryk/HC_microscopy_database)
 #     - fill in the mysql server parameters ('username', 'password', 'hostname', 'port') in the section bellow
 #     - use argument 'db' for 'data_load function' bellow
-
 # - __raw file__
 #     - define the pathway to the raw file ('path_to_raw_file') 
 #     - define the pathway to the lookup table with descriptions ('path_to_plate_file')
-
+#     - use argument 'raw file' for 'data_load function' bellow
 # - __processed file (prefered method)__
 #     - define the pathway to the processed file ('path_to_processed_file')
 #     - processed file part of published supp. material
+#     - use argument 'processed file' for 'data_load function' bellow
 
 # __export__
 # - __figure__
@@ -127,7 +127,7 @@ def data_load(source):
         data= procesed_data_Load_file(path_to_processed_file, initital_timepoints_skippped)
         return data
     else:
-        raise ValueError(f"Invalid source input: '{source}'. Expected: 'db' or 'raw file'.")
+        raise ValueError(f"Invalid source input: '{source}'. Expected: 'db', 'raw file' or 'processed file'.")
 
 #filling in a missing values ba linear interpolation
 def missing_values(data):
