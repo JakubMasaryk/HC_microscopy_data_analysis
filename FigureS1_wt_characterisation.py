@@ -16,6 +16,7 @@
 # - __figure__
 #     - exported as .PNG with 1000 dpi
 #     - define the pathway for export ('path_for_export')
+#     - set the 'export' argument (in the visualisation function) to 'True'
 
 # ------------------------------------------------------------------------------
 # __libraries__
