@@ -1,21 +1,18 @@
 # __READ ME__
-# __data source__
 
+# __data source__
 # - __relational database__
 #     - relational database and needs to be created and data uploaded prior to data load (see: https://github.com/JakubMasaryk/HC_microscopy_database)
 #     - fill in the mysql server parameters ('username', 'password', 'hostname', 'port') in the section bellow
 #     - use argument 'db' for 'data_load function' bellow
-
 # - __raw file__
 #     - define the pathway to the raw file ('path_to_raw_file') 
 #     - define the pathway to the lookup table with descriptions ('path_to_plate_file')
-
 # - __processed file (prefered method)__
 #     - define the pathway to the processed file ('path_to_processed_file')
 #     - processed file part of published supp. material
 
 # __export__
-
 # - __figure__
 #     - exported as .PNG with 1000 dpi
 #     - define the pathway for export ('path_for_export')
