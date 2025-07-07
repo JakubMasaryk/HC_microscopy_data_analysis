@@ -1,11 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # __libraries__
-
-# In[24]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,30 +17,20 @@ from matplotlib.colors import ListedColormap
 from scipy.stats import ttest_ind
 
 
+# -----------------------------------------------------------------------------------------------------
 # __params__
-
-# In[26]:
-
-
 plt.rcParams["legend.frameon"] = False
 plt.rcParams['legend.fontsize'] = 15
-
 plt.rcParams['axes.labelsize'] = 20
 plt.rcParams['axes.labelweight'] = 'bold'
-
 plt.rcParams['xtick.labelsize'] = 18
 plt.rcParams['ytick.labelsize'] = 18  
-
 plt.rcParams['font.size'] = 16
-
 plt.rcParams['figure.dpi'] = 1000
 
 
+# -----------------------------------------------------------------------------------------------------
 # __mysql server connection__
-
-# In[28]:
-
-
 #mysql server connection parameters
 username= ''
 password= ''
@@ -60,12 +43,7 @@ engine = create_engine(connection_string)
 
 
 # -----------------------------------------------------------------------------------------------------
-
 # __candidate genes identification function__
-
-# In[31]:
-
-
 def candidate_multiallele_hits(min_no_of_alleles, min_no_of_stages):
     
     #data load
@@ -85,12 +63,7 @@ def candidate_multiallele_hits(min_no_of_alleles, min_no_of_stages):
     
     return data_multiallele_hits.iloc[:, 1:-1].reset_index(drop= True)
 
-
 # __resampling functions__
-
-# In[33]:
-
-
 def no_of_entries_per_strain(data):
     
     data= data.groupby('mutation')[['fov_cell_id']].count().reset_index()
@@ -98,13 +71,9 @@ def no_of_entries_per_strain(data):
     data= data.sort_values('no_of_entries', ascending= False, ignore_index= True)
     
     return data
-
-
 def avg_no_of_entries_mutant_alleles(data):
     data= data.loc[data.strain != 'wt control']
     return round(data.no_of_entries.mean())
-
-
 def strains_resample(data, target_sample_size= 2000):
     
     if len(data) > target_sample_size:
@@ -126,10 +95,6 @@ def strains_resample(data, target_sample_size= 2000):
 
 
 # __data analysis and visualisation functions__
-
-# In[35]:
-
-
 def data_analysis_and_visualisation(selected_gene, min_cell_count, starting_timepoint_min, ending_timepoint_min, resample_agg_counts):
     
     #query params (common for both agg. size and no. data)
@@ -307,10 +272,6 @@ def data_analysis_and_visualisation(selected_gene, min_cell_count, starting_time
 
 
 # __stats functions__
-
-# In[37]:
-
-
 def chi2_test(data):
     
     chi2_data= data.assign(aggregates= np.where(data.number_of_foci > 0, '+', '-'))
@@ -390,234 +351,101 @@ def t_test(control_group, tested_group):
 
 
 # --------------------------------------------------------------------------------------
-
 # __candidate genes__
-
-# In[40]:
-
-
 candidate_multiallele_hits(min_no_of_alleles= 5, min_no_of_stages= 2)
-
-
-# In[41]:
-
-
-# 0 62 300
-
-
 # -------------------------------------------------------------------------------------------------------------------------------------
-
 # __ACT1 alleles__
 
 # * __formation (full: 0-62 min)__
-
-# In[45]:
-
-
 data_analysis_and_visualisation(selected_gene= 'ACT1', min_cell_count= 33, starting_timepoint_min= 0, ending_timepoint_min= 62, resample_agg_counts= True)
 
-
 # * __relocation & fusion (full: 62-300 min)__
-
-# In[47]:
-
-
 data_analysis_and_visualisation(selected_gene= 'ACT1', min_cell_count= 33, starting_timepoint_min= 62, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __relocation & fusion (late: 280-300 min)__
-
-# In[158]:
-
-
 data_analysis_and_visualisation(selected_gene= 'ACT1', min_cell_count= 33, starting_timepoint_min= 280, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __clearance (full: > 300 min)__
-
-# In[49]:
-
-
 data_analysis_and_visualisation(selected_gene= 'ACT1', min_cell_count= 33, starting_timepoint_min= 300, ending_timepoint_min= 400, resample_agg_counts= True)
 
 
 # ----------------------------------------------------------
-
 # __MOB2 alleles__
 
 # * __formation (full: 0-62 min)__
-
-# In[70]:
-
-
 data_analysis_and_visualisation(selected_gene= 'MOB2', min_cell_count= 33, starting_timepoint_min= 0, ending_timepoint_min= 62, resample_agg_counts= True)
 
-
 # * __relocation & fusion (full: 62-300 min)__
-
-# In[72]:
-
-
 data_analysis_and_visualisation(selected_gene= 'MOB2', min_cell_count= 33, starting_timepoint_min= 62, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __relocation & fusion (late: 280-300 min)__
-
-# In[154]:
-
-
 data_analysis_and_visualisation(selected_gene= 'MOB2', min_cell_count= 33, starting_timepoint_min= 280, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __clearance (full: > 300 min)__
-
-# In[74]:
-
-
 data_analysis_and_visualisation(selected_gene= 'MOB2', min_cell_count= 33, starting_timepoint_min= 300, ending_timepoint_min= 400, resample_agg_counts= True)
 
 
 # ---------------------------------------------------------------------------------------
-
 # __POL1 alleles__
 
 # * __formation (full: 0-62 min)__
-
-# In[85]:
-
-
 data_analysis_and_visualisation(selected_gene= 'POL1', min_cell_count= 33, starting_timepoint_min= 0, ending_timepoint_min= 62, resample_agg_counts= True)
 
-
 # * __relocation & fusion (full: 62-300 min)__
-
-# In[87]:
-
-
 data_analysis_and_visualisation(selected_gene= 'POL1', min_cell_count= 33, starting_timepoint_min= 62, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __relocation & fusion (late: 280-300 min)__
-
-# In[150]:
-
-
 data_analysis_and_visualisation(selected_gene= 'POL1', min_cell_count= 33, starting_timepoint_min= 280, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __clearance (full: > 300 min)__
-
-# In[89]:
-
-
 data_analysis_and_visualisation(selected_gene= 'POL1', min_cell_count= 33, starting_timepoint_min= 300, ending_timepoint_min= 400, resample_agg_counts= True)
 
 
 # --------------------------------------------------------------------------------------------------------------------
-
 # __CDC48 alleles__
 
 # * __formation (full: 0-62 min)__
-
-# In[100]:
-
-
 data_analysis_and_visualisation(selected_gene= 'CDC48', min_cell_count= 33, starting_timepoint_min= 0, ending_timepoint_min= 62, resample_agg_counts= True)
 
-
 # * __relocation & fusion (full: 62-300 min)__
-
-# In[102]:
-
-
 data_analysis_and_visualisation(selected_gene= 'CDC48', min_cell_count= 33, starting_timepoint_min= 62, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __relocation & fusion (late: 280-300 min)__
-
-# In[145]:
-
-
 data_analysis_and_visualisation(selected_gene= 'CDC48', min_cell_count= 33, starting_timepoint_min= 280, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __clearance (full: > 300 min)__
-
-# In[104]:
-
-
 data_analysis_and_visualisation(selected_gene= 'CDC48', min_cell_count= 33, starting_timepoint_min= 300, ending_timepoint_min= 400, resample_agg_counts= True)
 
 
 # --------------------------------------------------------------------------------------
-
 # __DAM1 alleles__
 
 # * __formation (full: 0-62 min)__
-
-# In[114]:
-
-
 data_analysis_and_visualisation(selected_gene= 'DAM1', min_cell_count= 33, starting_timepoint_min= 0, ending_timepoint_min= 62, resample_agg_counts= True)
 
-
 # * __relocation & fusion (full: 62-300 min)__
-
-# In[116]:
-
-
 data_analysis_and_visualisation(selected_gene= 'DAM1', min_cell_count= 33, starting_timepoint_min= 62, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __relocation & fusion (late: 280-300 min)__
-
-# In[141]:
-
-
 data_analysis_and_visualisation(selected_gene= 'DAM1', min_cell_count= 33, starting_timepoint_min= 280, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __clearance (full: > 300 min)__
-
-# In[118]:
-
-
 data_analysis_and_visualisation(selected_gene= 'DAM1', min_cell_count= 33, starting_timepoint_min= 300, ending_timepoint_min= 400, resample_agg_counts= True)
 
 
 # ---------------------------------------------------------------------------------
-
 # __PRE2 alleles__
 
 # * __formation (full: 0-62 min)__
-
-# In[127]:
-
-
 data_analysis_and_visualisation(selected_gene= 'PRE2', min_cell_count= 33, starting_timepoint_min= 0, ending_timepoint_min= 62, resample_agg_counts= True)
 
-
 # * __relocation & fusion (full: 62-300 min)__
-
-# In[129]:
-
-
 data_analysis_and_visualisation(selected_gene= 'PRE2', min_cell_count= 33, starting_timepoint_min= 62, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __relocation & fusion (late: 280-300 min)__
-
-# In[137]:
-
-
 data_analysis_and_visualisation(selected_gene= 'PRE2', min_cell_count= 33, starting_timepoint_min= 280, ending_timepoint_min= 300, resample_agg_counts= True)
 
-
 # * __clearance (full: > 300 min)__
-
-# In[131]:
-
-
 data_analysis_and_visualisation(selected_gene= 'PRE2', min_cell_count= 33, starting_timepoint_min= 300, ending_timepoint_min= 400, resample_agg_counts= True)
 
 
