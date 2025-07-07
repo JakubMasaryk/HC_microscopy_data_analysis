@@ -37,17 +37,12 @@ from sqlalchemy import create_engine
 # __params__
 plt.rcParams["legend.frameon"] = False
 plt.rcParams['legend.fontsize'] = 12
-
 plt.rcParams['axes.labelsize'] = 19
 plt.rcParams['axes.labelweight'] = 'bold'
-
 plt.rcParams['xtick.labelsize'] = 16
 plt.rcParams['ytick.labelsize'] = 16  
-
 plt.rcParams['font.size'] = 12
-
 plt.rcParams['figure.dpi'] = 1000
-
 plt.rcParams['font.family'] = 'Calibri'
 
 
