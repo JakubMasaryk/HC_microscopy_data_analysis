@@ -1,3 +1,22 @@
+# __READ ME__
+
+# __data source__
+# - __relational database__
+#     - relational database and needs to be created and data uploaded prior to data load (see: https://github.com/JakubMasaryk/HC_microscopy_database)
+#     - fill in the mysql server parameters ('username', 'password', 'hostname', 'port') in the section bellow
+#     - use argument 'db' for 'data_load function' bellow
+# - __raw file (prefered method__
+#     - define the pathway to the raw file ('path_to_raw_file') 
+#     - file part of published supp. material
+#     - use argument 'raw file' for 'data_load function' bellow
+
+# __export__
+# - __figure__
+#     - exported as .PNG with 1000 dpi
+#     - define the pathway for export ('path_for_export')
+#     - set the 'export' argument (in the visualisation function) to 'True'
+
+# -----------------------------------------------------------------------------------
 # __libraries__
 import numpy as np
 import pandas as pd
