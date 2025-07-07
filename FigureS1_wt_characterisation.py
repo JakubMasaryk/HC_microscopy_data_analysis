@@ -1,4 +1,24 @@
-# * __libraries__
+# __READ ME__
+
+# __data source__
+# - __relational database__
+#     - relational database and needs to be created and data uploaded prior to data load (see: https://github.com/JakubMasaryk/HC_microscopy_database)
+#     - fill in the mysql server parameters ('username', 'password', 'hostname', 'port') in the section bellow
+#     - use argument 'db' for 'data_load function' bellow
+# - __raw file__
+#     - define the pathway to the raw file ('path_to_raw_file') 
+#     - define the pathway to the lookup table with descriptions ('path_to_plate_file')
+# - __processed file (prefered method)__
+#     - define the pathway to the processed file ('path_to_processed_file')
+#     - processed file part of published supp. material
+
+# __export__
+# - __figure__
+#     - exported as .PNG with 1000 dpi
+#     - define the pathway for export ('path_for_export')
+
+# ------------------------------------------------------------------------------
+# __libraries__
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,7 +31,7 @@ from sqlalchemy import create_engine
 
 
 # ---------------------------------------------------------
-# * __params__
+# __params__
 plt.rcParams["legend.frameon"] = False
 plt.rcParams['legend.fontsize'] = 12
 plt.rcParams['axes.labelsize'] = 19
@@ -24,7 +44,7 @@ plt.rcParams['font.family'] = 'Calibri'
 
 
 # ---------------------------------------------------------------------------------
-# * __inputs__
+# __inputs__
 ###microscopy parameters
 initital_timepoints_skippped= 1
 microscopy_interval= 3.5
@@ -38,7 +58,7 @@ port= ''
 
 ###paths to files
 #processed file
-path_to_processed_file= r"..\Fig1_S1_processed_data.csv"
+path_to_processed_file= r"...\Fig1_S1_processed_data.csv"
 #raw file 
 path_to_raw_file= r"...\Fig1_S1_raw_data.csv"
 #plate layout lookup table
@@ -49,9 +69,9 @@ path_for_export= r"...\Figure_S1.png"
 
 
 # ------------------------------------------------------------------
-# * __data processiong functions__
+# __data processiong functions__
 #load from a raw file, data processing
-def raw_data_Load_and_processing_file(path, initial_delay, frequency, initial_timepoints_skipped):
+def raw_data_Load_and_processing_file(path, initial_delay, frequency, skipped_tmpts):
     dataset= pd.read_csv(path,
                          usecols= ['WELL LABEL', 'T', 'Cells Count wv1', 'Granules Cells with Org wv2', 'Granules Org per Cell wv2', 'Granules Area wv2'],
                          converters= {'WELL LABEL':lambda x: x.replace(' - ', '0') if len(x) == 5 else x.replace(' - ', '')})
@@ -60,31 +80,27 @@ def raw_data_Load_and_processing_file(path, initial_delay, frequency, initial_ti
                             Percentage= (dataset['Granules Cells with Org wv2']/dataset['Cells Count wv1'])*100)
     dataset.columns= ['Well', 'Timepoint', 'NumberOfCells', 'NumberOfCellsContainingAggregates', 'AverageNumberOfAggregatesPerCell', 'AverageSizeOfSingleAggregates', 'TimepointMinutes', 'TimepointHours', 'PercentageOfCellsContainingAggregates']    
     dataset= dataset.reindex(columns= ['Well', 'Timepoint', 'TimepointHours', 'TimepointMinutes', 'NumberOfCells', 'NumberOfCellsContainingAggregates','PercentageOfCellsContainingAggregates', 'AverageNumberOfAggregatesPerCell', 'AverageSizeOfSingleAggregates'])    
-    dataset=dataset.loc[dataset.Timepoint > initial_timepoints_skipped]
+    dataset=dataset.loc[dataset.Timepoint > skipped_tmpts]
     dataset= dataset.loc[dataset.Well.isin(['N03', 'N04', 'O03', 'O04', 'P03', 'P04'])]
     return dataset
 
 #load from a processed-data file
-def procesed_data_Load_file(path, initial_timepoints_skipped):
+def procesed_data_Load_file(path, skipped_tmpts):
     dataset= pd.read_csv(path)    
-    dataset=dataset.loc[dataset.Timepoint > initial_timepoints_skipped]
+    dataset=dataset.loc[dataset.Timepoint > skipped_tmpts]
     return dataset
 
 #load from db
-def raw_data_Load_and_processing_db(initial_timepoints_skipped):
+def raw_data_Load_and_processing_db(skipped_tmpts):
     
     #mysql server connection
     connection_string = f"mysql+pymysql://{username}:{password}@{hostname}:{port}/hc_microscopy_data_v2"
     engine = create_engine(connection_string) 
     
     #query to obtain the desired data
-    query = "call p_wt_characterisation_data (%s, %s)"
-    param1= initial_timepoints_skipped
-    param2= 'basic'
-    data= pd.read_sql(query, engine, params= (param1,param2,))
-    
-    #unifying the column names (with 'file load')
-    data.columns= ['Well', 'Timepoint', 'TimepointHours', 'TimepointMinutes', 'NumberOfCells', 'NumberOfCellsContainingAggregates', 'PercentageOfCellsContainingAggregates', 'AverageNumberOfAggregatesPerCell', 'AverageSizeOfSingleAggregates']
+    query = "call p_wt_characterisation_data_basic (%s)"
+    param1= skipped_tmpts
+    data= pd.read_sql(query, engine, params= (param1,))
     
     #unifying NaNs (with 'file load')
     data= data.assign(AverageSizeOfSingleAggregates= np.where((data.NumberOfCellsContainingAggregates==0)&(data.PercentageOfCellsContainingAggregates==0)&(data.AverageNumberOfAggregatesPerCell==0), np.NaN, data.AverageSizeOfSingleAggregates))
@@ -97,8 +113,6 @@ def raw_data_Load_and_processing_db(initial_timepoints_skipped):
 def data_load(source):
     if source=='db':
         data= raw_data_Load_and_processing_db(initital_timepoints_skippped)
-        plate= pd.read_excel(path_to_plate_file)
-        data= data.merge(plate, how= 'left', on='Well')
         return data
     elif source=='raw file':
         data= raw_data_Load_and_processing_file(path_to_raw_file, microscopy_initital_delay, microscopy_interval, initital_timepoints_skippped)
@@ -107,8 +121,6 @@ def data_load(source):
         return data
     elif source=='processed file':
         data= procesed_data_Load_file(path_to_processed_file, initital_timepoints_skippped)
-        plate= pd.read_excel(path_to_plate_file)
-        data= data.merge(plate, how= 'left', on='Well')
         return data
     else:
         raise ValueError(f"Invalid source input: '{source}'. Expected: 'db' or 'raw file'.")
@@ -207,7 +219,7 @@ def stage_bins(data, step= 2, minimal_formation_length= 30, maximal_formation_en
     return stage_bins
 
 
-# * __visualisation functions__
+# __visualisation functions__
 def Figure_S1(data, stage_bins, export=False):
     fig, ax= plt.subplots(1, 2, figsize= (12.5, 5), constrained_layout= True)
 
@@ -293,17 +305,12 @@ def Figure_S1(data, stage_bins, export=False):
 
 
 # ------------------------------------------------------------
-# * __WT analysis__
-_20250106= data_load('processed file')
+# __Figure S1: WT analysis, exposed vs. non-exposed cells__
+_20250106= data_load('db')
 _20250106= missing_values(_20250106)
 _20250106= repeats_group_mean_std_moe95(_20250106)
-
 calculated_stage_bins= stage_bins(_20250106)
-
-_20250106.head(5)
-
-
-# ----------------------------------------------------------------------------------------
+# _20250106.head(5)
 
 # * __Figure S1__
 Figure_S1(_20250106, calculated_stage_bins, export= False)
