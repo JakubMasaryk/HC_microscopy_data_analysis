@@ -5,7 +5,7 @@
 #     - relational database and needs to be created and data uploaded prior to data load (see: https://github.com/JakubMasaryk/HC_microscopy_database)
 #     - fill in the mysql server parameters ('username', 'password', 'hostname', 'port') in the section bellow
 #     - use argument 'db' for 'data_load function' bellow
-# - __raw file (prefered method__
+# - __raw file (prefered method)__
 #     - define the pathway to the raw file ('path_to_raw_file') 
 #     - file part of published supp. material
 #     - use argument 'raw file' for 'data_load function' bellow
