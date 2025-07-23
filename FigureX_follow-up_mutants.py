@@ -1153,7 +1153,7 @@ hc_data= stages(hc_data, stage_bins_list)
 # __visualisation__
 
 # * __fig. X: ubiquitin-ligases__
-follow_up_figure_basic(hc_data, bsc_data, selected_mutants= ['hrd1', 'ubr1', 'slx8'], subfigures_label= True, export= False)
+follow_up_figure_basic(hc_data, bsc_data, selected_mutants= ['', '', ''], subfigures_label= True, export= False)
 
 # * __fig. SX: ubiquitin-ligases__
 bioscreen_supp_fig(data= bsc_data, export= False)
