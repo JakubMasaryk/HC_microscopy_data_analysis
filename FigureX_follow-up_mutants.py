@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # __read me__
 
 # * __database as a data source__
@@ -11,7 +8,6 @@
 #         - to export set the 'export' argument to 'True' (in 'follow_up_figure_basic' and 'bioscreen_supp_fig')
 #     - fill in selected mutated genes ('formated_gene_list')
 #     - fill in 'selected_mutants' in 'follow_up_figure_basic' function- mutants visualised as a scatterplot (WT included by default, do not include)
-
 # * __file as a data source__
 #     - select 'file' as argument in 'hc_data_load' (variable 'hc_data')
 #     - fill in pathway to hc microscopy data ('path_microscopy_data')
@@ -21,11 +17,8 @@
 #     - fill in selected mutated genes ('formated_gene_list')
 #     - fill in 'selected_mutants' in 'follow_up_figure_basic' function- mutants visualised as a scatterplot (WT included by default, do not include)
 
+
 # __libraries__
-
-# In[30]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -42,10 +35,6 @@ import sys
 
 
 # __params__
-
-# In[32]:
-
-
 plt.rcParams["legend.frameon"] = False
 plt.rcParams['legend.fontsize'] = 15
 plt.rcParams['axes.labelsize'] = 20
@@ -57,66 +46,45 @@ plt.rcParams['figure.dpi'] = 1000
 
 
 # __inputs__
-
-# In[12]:
-
-
 #initial timepoints skipped (generally low quality data)
 initital_timepoints_skipped= 0
-
 #p value threshold
 p_value_thr= 0.05
-
 #selected timepoints
 formation= 10 #60 min
 rf= 25 #150 min
 clearance= 68 # 408
-
 #mysql server connection parameters
-username= 'root'
-password= 'poef.qve5353'
-hostname= '127.0.0.1'
-port= '3306' 
-
+username= ''
+password= ''
+hostname= ''
+port= '' 
 #list of genes of interest, replcace the "GENE1-∞" with selected genes (e.g., "ACT1", "TPM1" etc...)
 #formated for mysql stored procedure (just fill in the names)
-formated_gene_list= '["HRD1", "UBR1", "SLX8", "RAD6"]'
+formated_gene_list= '["GENE1", "GENE2", "GENE3", "GENE4"]'
 #standard list, based on formated, used to filter bioscreen data (to selected genes)
 gene_list= formated_gene_list[1:-1].split(',') #split the formatted gene list
 gene_list= [x.rstrip(' ').lstrip(' ').rstrip('"').lstrip('"').lower() for x in gene_list] #format the elements/genes
 
 
-# In[35]:
-
-
 ####paths to imported files####
-
 #pathway to microscopy dataset (needed if data loaded from raw, processed file)
-path_microscopy_data= r"C:\Users\Jakub\Desktop\figures\Figure_X_ubiquitin_ligases\data\ubiquitin_ligases_microscopy_processed_data.csv"
+path_microscopy_data= r""
 #pathway to bioscreen dataset (always needed, bioscreen data not part of the database)
-path_bioscreen_data= r"C:\Users\Jakub\Desktop\figures\Figure_X_ubiquitin_ligases\data\ub_lig_mutants_bioscreen_processed_data.xlsx"
-
-
-# In[36]:
+path_bioscreen_data= r""
 
 
 ####paths for export####
-
 #
-figure_export_path= r"C:\Users\Jakub\Desktop\fig_ub_ligases.png"
+figure_export_path= r""
 #
-supp_table_export_path= r"C:\Users\Jakub\Desktop\supp_tab_ub_ligases.xlsx"
+supp_table_export_path= r""
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-
 # __functions__
 
 # * __data load and processing__
-
-# In[40]:
-
-
 #microscopy data load
 #source 'db' to load from database or 'file' to load from a file
 def hc_data_load(source, path=path_microscopy_data, skipped_tmpts= initital_timepoints_skipped, gene_list= formated_gene_list, mysql_username= username, mysql_password= password, mysql_hostname= hostname, mysql_port= port):
@@ -166,10 +134,6 @@ def time_range_hours(data, start= 0, end= 8):
 
 
 # * __statistics__
-
-# In[42]:
-
-
 #margin of error: t-distribution, CL 95%, confidence intervals: mean +/- margin of error
 def t_margin_of_error_cl95(data):
     cl=0.95
@@ -426,10 +390,6 @@ def stages(data, stage_bins):
 
 
 # * __visualisation__
-
-# In[44]:
-
-
 def follow_up_figure_basic(hc_data, bsc_data, selected_mutants, subfigures_label=False, start_label= 'A', timepoint_formation= formation, timepoint_rf= rf, timepoint_cl= clearance, error_bars= 'moe', control_label= 'control', exposed_label= 'As-exposed', export= False, export_path= figure_export_path):
     fig= plt.figure(figsize= (22, 15), constrained_layout= True)
     gs= gridspec.GridSpec(9, 8, figure=fig)
@@ -1156,97 +1116,45 @@ def bioscreen_supp_fig(data, as_concentration= 0.5, slope_timepoint1= 10, slope_
 
 
 # -------------------------------------------------------------------------------------
-
 # __data load, processing and statistical analysis__
 
 # * __HC microscopy data__
-
-# In[48]:
-
-
 #load the data
 hc_data= hc_data_load(source= 'db')
-
-
-# In[49]:
-
-
-# hc_data.to_csv(r"C:\Users\Jakub\Desktop\figures\Figure_X_ubiquitin_ligases\data\ubiquitin_ligases_processed_data.csv", encoding= 'utf-8', index= False)
-
-
-# In[50]:
-
 
 #interpolate potential missing values
 hc_data= missing_values(hc_data)
 
-
-# In[51]:
-
-
 #define timerange (for follow-up generally limited to 0-7 hours)
 hc_data= time_range_hours(hc_data, 0, 7)
 
-
-# In[52]:
-
-
+#statistics
 hc_data= repeats_group_mean_std_moe95_two_conditions(hc_data)
 hc_data= t_test_two_conditions(hc_data)
 hc_data= order_mutants_two_conditions(hc_data)
-
-
-# In[53]:
-
 
 hc_data.head()
 
 
 # * __bisocreen data__
-
-# In[55]:
-
-
 bsc_data= bsc_data_load()
-
-
-# In[56]:
-
 
 bsc_data.head()
 
 
 # * __stages__
-
-# In[58]:
-
-
+#stage timeframes calculation
 stage_bins_list= stage_bins(hc_data)
 stage_bins_list
-
-
-# In[59]:
-
-
 hc_data= stages(hc_data, stage_bins_list)
 
 
 # -----------------------------------------------------------------------------------------------------------
-
 # __visualisation__
 
 # * __fig. X: ubiquitin-ligases__
-
-# In[63]:
-
-
 follow_up_figure_basic(hc_data, bsc_data, selected_mutants= ['hrd1', 'ubr1', 'slx8'], subfigures_label= True, export= False)
 
-
 # * __fig. SX: ubiquitin-ligases__
-
-# In[65]:
-
-
 bioscreen_supp_fig(data= bsc_data, export= False)
 
