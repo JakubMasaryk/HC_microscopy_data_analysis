@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # __Libraries__
 
 # In[3]:
