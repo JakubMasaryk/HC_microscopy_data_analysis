@@ -1,17 +1,12 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # ## __Analysis of the Average OD600 Change in the Early Exponential Phase__
 
 # #### __general description__
-
 # * __growth assays__ on selected mutant strain: __temperature-sensitive mutants__ (TS collection) in presence of __arsenic__
 # * focus on the __early exponential phase__: app. __5-15 hours of growth__
 # * __linear regression__ line fitted to the data points (characterozed by a timepoint (h) and OD600) between 5-15 hours and __slope calculated__ (__slope__ eqauls and __average OD600 increase per hour__)
 # * 4D __data__ (slope control, slope exposed, p-value control and p-value exposed) also __clustered__ by 2 algorithms: __K-Means and DBSCAN__
 
 # #### __input data__
-
 # * __OD measurements datasets__: well-timepoint-OD600
 # * __plate layout dataset:__ well-strain-repeat-As concentration
 # * __load from a file__: __specify__ file pathways in __'file pathways'__ section and __define__ in __'load_process_merge' function__ (also choose __'files'__ for source)
@@ -22,10 +17,6 @@
 # * __define the temporal range__ in the __'analyse slopes' section__ as an argument of 'analyse_slopes' function (pre-set to 5-15 hours)
 
 # ## __Libraries__
-
-# In[66]:
-
-
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -42,10 +33,6 @@ from sklearn.metrics import silhouette_score as ss
 # ## __Cloud Access__
 
 # #### __Backlblaze B2 authentication__
-
-# In[69]:
-
-
 data_bucket_name= 'bioscreen-data'
 bucket_key_id= '003b5f880f95dd40000000009';
 bucket_key= 'K003+OGX7qB+jAEv5GZrF93mHKj1NcU'
@@ -54,10 +41,6 @@ bucket_key= 'K003+OGX7qB+jAEv5GZrF93mHKj1NcU'
 # ## __Functions__
 
 # #### __statistics__
-
-# In[72]:
-
-
 #margin of error: t-distribution, CL 95%, confidence intervals: mean +/- margin of error
 #input: list of OD600 values from individual biological replicates (for a single timepoint)
 def t_margin_of_error_cl95(data):
@@ -224,10 +207,6 @@ def DBSCAN_param_opt(data, no_of_combinations= 20, min_eps=0.1, max_eps=1, min_m
 
 
 # #### __data processing__
-
-# In[74]:
-
-
 ### load both the bioscreen data and corresponding plate layout, process and merge
 # load from files on local hardrive (source= 'files'), file pathways need to be defined
 #load from Backblaze B2 cloud storage (source= 'cloud'), file names (as listed on the cloud) need to be defined
@@ -429,10 +408,6 @@ def assign_cluster(dataset):
 
 
 # #### __plotting__
-
-# In[76]:
-
-
 def plot(data, x_offset= 0.15, export= False, path_for_export= r"C:\Users\Jakub\Desktop\fig.png"):
     
     try:
@@ -570,41 +545,33 @@ def visualize_clusters(clustered_data, nonexposed_pvalue_series, exposed_p_value
 # ## __Data Preparation and Statistical Analysis__
 
 # __file pathways__
-
-# In[79]:
-
-
 #bioscreen 1
-data_path_bsc1_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\1.Bioscreen_Jakub\data_for_analysis\20251210_bioscreen1_0.5mM.csv"
-layout_path_bsc1_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\1.Bioscreen_Jakub\data_for_analysis\20251210_bioscreen1_0.5mM_plate_layout.xlsx"
-data_path_bsc1_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\1.Bioscreen_Jakub\data_for_analysis\20251210_bioscreen1_1mM.csv"
-layout_path_bsc1_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\1.Bioscreen_Jakub\data_for_analysis\20251210_bioscreen1_1mM_plate_layout.xlsx"
+data_path_bsc1_05_mM= r""
+layout_path_bsc1_05_mM= r""
+data_path_bsc1_1_mM= r""
+layout_path_bsc1_1_mM= r""
 
 #bioscreen 2
-data_path_bsc2_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\2.Bioscreen_Jakub\data_for_analysis\20251212_bioscreen2_0.5mM.csv"
-layout_path_bsc2_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\2.Bioscreen_Jakub\data_for_analysis\20251212_bioscreen2_0.5mM_plate_layout.xlsx"
-data_path_bsc2_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\2.Bioscreen_Jakub\data_for_analysis\20251212_bioscreen2_1mM.csv"
-layout_path_bsc2_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\2.Bioscreen_Jakub\data_for_analysis\20251212_bioscreen2_1mM_plate_layout.xlsx"
+data_path_bsc2_05_mM= r""
+layout_path_bsc2_05_mM= r""
+data_path_bsc2_1_mM= r""
+layout_path_bsc2_1_mM= r""
 
 #bioscreen 3
-data_path_bsc3_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\3.Bioscreen_Jakub\data_for_analysis\20251215_bioscreen3_0.5mM.csv"
-layout_path_bsc3_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\3.Bioscreen_Jakub\data_for_analysis\20251215_bioscreen3_0.5mM_plate_layout.xlsx"
-data_path_bsc3_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\3.Bioscreen_Jakub\data_for_analysis\20251215_bioscreen3_1mM.csv"
-layout_path_bsc3_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\3.Bioscreen_Jakub\data_for_analysis\20251215_bioscreen3_1mM_plate_layout.xlsx"
+data_path_bsc3_05_mM= r""
+layout_path_bsc3_05_mM= r""
+data_path_bsc3_1_mM= r""
+layout_path_bsc3_1_mM= r""
 
 #bioscreen 4
-data_path_bsc4_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\4. Bioscreen_Jakub\data_for_analysis\20251217_bioscreen4_0.5mM.csv"
-layout_path_bsc4_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\4. Bioscreen_Jakub\data_for_analysis\20251217_bioscreen4_0.5mM_plate_layout.xlsx"
-data_path_bsc4_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\4. Bioscreen_Jakub\data_for_analysis\20251217_bioscreen4_1mM.csv"
-layout_path_bsc4_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\4. Bioscreen_Jakub\data_for_analysis\20251217_bioscreen4_1mM_plate_layout.xlsx"
+data_path_bsc4_05_mM= r""
+layout_path_bsc4_05_mM= r""
+data_path_bsc4_1_mM= r""
+layout_path_bsc4_1_mM= r""
 
 
 # __file labels__ 
 # * for cloud
-
-# In[81]:
-
-
 #bioscreen 1
 data_label_bsc1_05_mM= '20251210_bioscreen1_0.5mM.csv'
 layout_label_bsc1_05_mM= '20251210_bioscreen1_0.5mM_plate_layout.xlsx'
@@ -631,10 +598,6 @@ layout_label_bsc4_1_mM= '20251217_bioscreen4_1mM_plate_layout.xlsx'
 
 
 # __load and merge the datasets__
-
-# In[83]:
-
-
 #bioscreen 1
 data_05_1= load_process_merge(bioscreen_data_cloud_label= data_label_bsc1_05_mM,
                               plate_layout_cloud_label= layout_label_bsc1_05_mM,
@@ -669,10 +632,6 @@ data_1_4= load_process_merge(bioscreen_data_cloud_label= data_label_bsc4_1_mM,
 
 
 # __drop low-quality technical replicates__
-
-# In[85]:
-
-
 #bioscreen 1
 data_1_1= drop_wells(data_1_1, [1, 11])
 
@@ -688,10 +647,6 @@ data_1_4= drop_wells(data_1_4, [64])
 
 
 # __average the technical replicates__
-
-# In[87]:
-
-
 #bioscreen 1
 data_05_1= tech_rep_average(data_05_1)
 data_1_1= tech_rep_average(data_1_1)
@@ -710,10 +665,6 @@ data_1_4= tech_rep_average(data_1_4)
 
 
 # __concatenate into a single dataset__
-
-# In[89]:
-
-
 data= pd.concat([data_05_1, data_1_1,
                  data_05_2, data_1_2,
                  data_05_3, data_1_3,
@@ -722,52 +673,28 @@ data= pd.concat([data_05_1, data_1_1,
 
 
 # __analyse slopes__
-
-# In[91]:
-
-
 data= analyse_slopes(data, 5, 15)
 
 
 # __assign cluster from the image-based screening__
-
-# In[93]:
-
-
 data= assign_cluster(data)
 
 
 # __remove unnecessary clusters__
-
-# In[95]:
-
-
 data= data.loc[data.Cluster != 'nuclear import']
 
 
 # ## __Visualisation__
 
 # __full dataset__
-
-# In[98]:
-
-
 plot(data)
 
 
 # __filtered dataset: based on p-value category in control (non-exposed) cells ('no significance' and '*')__
-
-# In[100]:
-
-
 _filter= data.loc[(data.AsConcentration== 0) &
                   (data.Significance.isin(['', '*'])),
                   'Strain']
 filtered_data= data.loc[data.Strain.isin(_filter)]
-
-
-# In[101]:
-
 
 plot(filtered_data,
      x_offset= 0.05)
@@ -781,10 +708,6 @@ plot(filtered_data,
 # * __input__ dataset: 'data', __final dataset__ from __previous section__
 
 # #### __data prep__
-
-# In[106]:
-
-
 #pivot around the As concentration
 data_for_clustering= data.pivot_table(index= 'Strain',
                                       columns= 'AsConcentration',
@@ -796,10 +719,6 @@ data_for_clustering= data_for_clustering.set_index('strain')
 
 
 # __drop strains__
-
-# In[108]:
-
-
 #drop strain (index) from data fro cliustering
 #input: data for clustering + list of alleles (mutants) to drop
 #mostly for apparent outliers
@@ -809,19 +728,11 @@ def drop_strain(dataset_for_clustering, mutants_to_drop):
     else:
         return dataset_for_clustering.loc[~dataset_for_clustering.index.isin(mutants_to_drop)]
 
-
-# In[109]:
-
-
 data_for_clustering= drop_strain(data_for_clustering, ['act1-108'])
 # data_for_clustering
 
 
 # __split by a condition ([As])__
-
-# In[111]:
-
-
 _05mM_data_for_clustering= data_for_clustering.loc[:, ['slope_0mM', 'slope_05mM', 'slope_pvalue_0mM', 'slope_pvalue_05mM']]
 _1mM_data_for_clustering= data_for_clustering.loc[:, ['slope_0mM', 'slope_1mM', 'slope_pvalue_0mM', 'slope_pvalue_1mM']]
 
@@ -829,43 +740,19 @@ _1mM_data_for_clustering= data_for_clustering.loc[:, ['slope_0mM', 'slope_1mM', 
 # #### __k-means__
 
 # * __0.5 mM arsenic__
-
-# In[114]:
-
-
 elbow_plot(normalize_numerical_columns(_05mM_data_for_clustering))
-
-
-# In[115]:
-
 
 k_means_clustered= k_means(normalize_numerical_columns(_05mM_data_for_clustering), k= 6)
 # k_means_clustered
-
-
-# In[116]:
-
 
 visualize_clusters(k_means_clustered, _05mM_data_for_clustering.iloc[:, -2], _05mM_data_for_clustering.iloc[:, -1])
 
 
 # * __1 mM arsenic__
-
-# In[118]:
-
-
 elbow_plot(normalize_numerical_columns(_1mM_data_for_clustering))
-
-
-# In[119]:
-
 
 k_means_clustered2= k_means(normalize_numerical_columns(_1mM_data_for_clustering), k= 6)
 # k_means_clustered2
-
-
-# In[120]:
-
 
 visualize_clusters(k_means_clustered2, _1mM_data_for_clustering.iloc[:, -2], _1mM_data_for_clustering.iloc[:, -1])
 
@@ -873,49 +760,18 @@ visualize_clusters(k_means_clustered2, _1mM_data_for_clustering.iloc[:, -2], _1m
 # #### __DBSCAN__
 
 # * __0.5 mM arsenic__
-
-# In[123]:
-
-
 DBSCAN_param_opt(normalize_numerical_columns(_05mM_data_for_clustering), no_of_combinations= 20, min_eps=0.1, max_eps=1, min_min_samples=3, max_min_samples=10).head(3)
-
-
-# In[124]:
-
 
 dbscan_clustered= dbscan(normalize_numerical_columns(_05mM_data_for_clustering), epsilon= 0.19, no_of_points= 6)
 # dbscan_clustered
-
-
-# In[125]:
-
 
 visualize_clusters(dbscan_clustered, _05mM_data_for_clustering.iloc[:, -2], _05mM_data_for_clustering.iloc[:, -1])
 
 
 # * __1mM arsenic__
-
-# In[127]:
-
-
 DBSCAN_param_opt(normalize_numerical_columns(_1mM_data_for_clustering), no_of_combinations= 20, min_eps=0.1, max_eps=1, min_min_samples=3, max_min_samples=10).head(3)
-
-
-# In[128]:
-
 
 dbscan_clustered2= dbscan(normalize_numerical_columns(_1mM_data_for_clustering), epsilon= 0.34, no_of_points= 3)
 # dbscan_clustered2
 
-
-# In[129]:
-
-
 visualize_clusters(dbscan_clustered2, _1mM_data_for_clustering.iloc[:, -2], _1mM_data_for_clustering.iloc[:, -1])
-
-
-# In[ ]:
-
-
-
-
