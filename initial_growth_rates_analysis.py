@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # ## __Analysis of the Average OD600 Change in the Early Exponential Phase__
 
 # #### __general description__
@@ -26,10 +23,6 @@
 # * __define the temporal range__ in the __'analyse slopes' sections__ as an argument of 'analyse_slopes' function (pre-set to 5-15 hours)
 
 # ## __Libraries__
-
-# In[333]:
-
-
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -46,10 +39,6 @@ from sklearn.metrics import silhouette_score as ss
 # ## __Cloud Access__
 
 # #### __Backlblaze B2 authentication__
-
-# In[336]:
-
-
 data_bucket_name= 'bioscreen-data'
 subbucket_ts_name= 'temperature-sensitive-alleles'
 subbucket_sga_name= 'SGA-mutants'
@@ -60,10 +49,6 @@ bucket_key= 'K003+OGX7qB+jAEv5GZrF93mHKj1NcU'
 # ## __Functions__
 
 # #### __statistics__
-
-# In[339]:
-
-
 #margin of error: t-distribution, CL 95%, confidence intervals: mean +/- margin of error
 #input: list of OD600 values from individual biological replicates (for a single timepoint)
 def t_margin_of_error_cl95(data):
@@ -286,10 +271,6 @@ def DBSCAN_param_opt(data, no_of_combinations= 20, min_eps=0.1, max_eps=1, min_m
 
 
 # #### __data processing__
-
-# In[341]:
-
-
 ### load both the bioscreen data and corresponding plate layout, process and merge
 # load from files on local hardrive (source= 'files'), file pathways need to be defined
 #load from Backblaze B2 cloud storage (source= 'cloud'), file names (as listed on the cloud) need to be defined
@@ -664,10 +645,6 @@ def assign_cluster(dataset):
 
 
 # #### __plotting__
-
-# In[536]:
-
-
 def plot(data, x_offset= 0.15, export= False, width= 30, height= 15, significance_symbol_size= 15, path_for_export= r"C:\Users\Jakub\Desktop\fig.png"):
     
     try:
@@ -877,41 +854,33 @@ def visualize_clusters_individual_datasets(clustered_data1, nonexposed_pvalue_se
 # #### __TS alleles__
 
 # __file pathways__
-
-# In[347]:
-
-
 #bioscreen 1
-data_path_bsc1_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\1.Bioscreen_Jakub\data_for_analysis\20251210_bioscreen1_0.5mM.csv"
-layout_path_bsc1_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\1.Bioscreen_Jakub\data_for_analysis\20251210_bioscreen1_0.5mM_plate_layout.xlsx"
-data_path_bsc1_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\1.Bioscreen_Jakub\data_for_analysis\20251210_bioscreen1_1mM.csv"
-layout_path_bsc1_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\1.Bioscreen_Jakub\data_for_analysis\20251210_bioscreen1_1mM_plate_layout.xlsx"
+data_path_bsc1_05_mM= r"...\20251210_bioscreen1_0.5mM.csv"
+layout_path_bsc1_05_mM= r"...\20251210_bioscreen1_0.5mM_plate_layout.xlsx"
+data_path_bsc1_1_mM= r"...\20251210_bioscreen1_1mM.csv"
+layout_path_bsc1_1_mM= r"...\20251210_bioscreen1_1mM_plate_layout.xlsx"
 
 #bioscreen 2
-data_path_bsc2_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\2.Bioscreen_Jakub\data_for_analysis\20251212_bioscreen2_0.5mM.csv"
-layout_path_bsc2_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\2.Bioscreen_Jakub\data_for_analysis\20251212_bioscreen2_0.5mM_plate_layout.xlsx"
-data_path_bsc2_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\2.Bioscreen_Jakub\data_for_analysis\20251212_bioscreen2_1mM.csv"
-layout_path_bsc2_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\2.Bioscreen_Jakub\data_for_analysis\20251212_bioscreen2_1mM_plate_layout.xlsx"
+data_path_bsc2_05_mM= r"...\20251212_bioscreen2_0.5mM.csv"
+layout_path_bsc2_05_mM= r"...\20251212_bioscreen2_0.5mM_plate_layout.xlsx"
+data_path_bsc2_1_mM= r"...\20251212_bioscreen2_1mM.csv"
+layout_path_bsc2_1_mM= r"...\20251212_bioscreen2_1mM_plate_layout.xlsx"
 
 #bioscreen 3
-data_path_bsc3_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\3.Bioscreen_Jakub\data_for_analysis\20251215_bioscreen3_0.5mM.csv"
-layout_path_bsc3_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\3.Bioscreen_Jakub\data_for_analysis\20251215_bioscreen3_0.5mM_plate_layout.xlsx"
-data_path_bsc3_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\3.Bioscreen_Jakub\data_for_analysis\20251215_bioscreen3_1mM.csv"
-layout_path_bsc3_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\3.Bioscreen_Jakub\data_for_analysis\20251215_bioscreen3_1mM_plate_layout.xlsx"
+data_path_bsc3_05_mM= r"...\20251215_bioscreen3_0.5mM.csv"
+layout_path_bsc3_05_mM= r"...\20251215_bioscreen3_0.5mM_plate_layout.xlsx"
+data_path_bsc3_1_mM= r"...\20251215_bioscreen3_1mM.csv"
+layout_path_bsc3_1_mM= r"...\20251215_bioscreen3_1mM_plate_layout.xlsx"
 
 #bioscreen 4
-data_path_bsc4_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\4. Bioscreen_Jakub\data_for_analysis\20251217_bioscreen4_0.5mM.csv"
-layout_path_bsc4_05_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\4. Bioscreen_Jakub\data_for_analysis\20251217_bioscreen4_0.5mM_plate_layout.xlsx"
-data_path_bsc4_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\4. Bioscreen_Jakub\data_for_analysis\20251217_bioscreen4_1mM.csv"
-layout_path_bsc4_1_mM= r"C:\Users\Jakub\Desktop\hits_bioscreens\4. Bioscreen_Jakub\data_for_analysis\20251217_bioscreen4_1mM_plate_layout.xlsx"
+data_path_bsc4_05_mM= r"...\20251217_bioscreen4_0.5mM.csv"
+layout_path_bsc4_05_mM= r"...\20251217_bioscreen4_0.5mM_plate_layout.xlsx"
+data_path_bsc4_1_mM= r"...\20251217_bioscreen4_1mM.csv"
+layout_path_bsc4_1_mM= r"...\20251217_bioscreen4_1mM_plate_layout.xlsx"
 
 
 # __file labels__ 
 # * for cloud
-
-# In[349]:
-
-
 #bioscreen 1
 data_label_bsc1_05_mM= '20251210_bioscreen1_0.5mM.csv'
 layout_label_bsc1_05_mM= '20251210_bioscreen1_0.5mM_plate_layout.xlsx'
@@ -938,10 +907,6 @@ layout_label_bsc4_1_mM= '20251217_bioscreen4_1mM_plate_layout.xlsx'
 
 
 # __load and merge the datasets__
-
-# In[351]:
-
-
 #bioscreen 1
 data_05_1= load_process_merge(bioscreen_data_cloud_label= data_label_bsc1_05_mM,
                               plate_layout_cloud_label= layout_label_bsc1_05_mM,
@@ -976,19 +941,11 @@ data_1_4= load_process_merge(bioscreen_data_cloud_label= data_label_bsc4_1_mM,
 
 
 # __drop low-quality technical replicates__
-
-# In[353]:
-
-
 #bioscreen 2
 data_1_2= drop_wells(data_1_2, [62])
 
 
 # __average the technical replicates__
-
-# In[355]:
-
-
 #bioscreen 1
 data_05_1= tech_rep_average(data_05_1)
 data_1_1= tech_rep_average(data_1_1)
@@ -1007,10 +964,6 @@ data_1_4= tech_rep_average(data_1_4)
 
 
 # __concatenate into a single dataset__
-
-# In[357]:
-
-
 data= pd.concat([data_05_1, data_1_1,
                  data_05_2, data_1_2,
                  data_05_3, data_1_3,
@@ -1019,83 +972,41 @@ data= pd.concat([data_05_1, data_1_1,
 
 
 # __analyse slopes__
-
-# In[359]:
-
-
 data= analyse_slopes(data, 5, 25)
 
 
 # __assign cluster from the image-based screening__
-
-# In[361]:
-
-
 data= assign_cluster(data)
 
 
 # __filter out the strains with coefficient of variation above 33% (under any condition)__
-
-# In[363]:
-
-
 _drop_strains_ts= list(data.loc[data.SlopesCV > 33].Strain.unique())
 # _drop_strains_ts
-
-
-# In[364]:
-
-
 data= drop_strain2(data, _drop_strains_ts)
 
 
 # #### __SGA mutants__
 
 # __load and process the SGA data__
-
-# In[367]:
-
-
 data_sga= load_process_sga_data()
 
 
 # __drop the strains already analyzed in the TS-allele batch ('data')__
-
-# In[369]:
-
-
 _ts_batch_strains= list(data.loc[data.Strain!= 'WT'].Strain.unique())
 data_sga= drop_strain2(data_sga, _ts_batch_strains)
 
 
 # __analyse slopes__
-
-# In[371]:
-
-
 data_sga= analyse_slopes(data_sga, 5, 25)
 
 
 # __assign clusters__
-
-# In[373]:
-
-
 data_sga= assign_cluster(data_sga)
 
 
 # __filter out the strains with coefficient of variation above 33% (under any condition)__
-
-# In[375]:
-
-
 _drop_strains_sga= list(data_sga.loc[data_sga.SlopesCV > 33].Strain.unique())
 # _drop_strains_sga
-
-
-# In[376]:
-
-
 data_sga= drop_strain2(data_sga, _drop_strains_sga)
 
 
@@ -1104,10 +1015,6 @@ data_sga= drop_strain2(data_sga, _drop_strains_sga)
 # #### __TS alleles__
 
 # __full dataset__
-
-# In[512]:
-
-
 plot(data,
      width= 45,
      height= 15,
@@ -1117,19 +1024,10 @@ plot(data,
 
 
 # __filtered dataset: based on p-value category in control (non-exposed) cells ('no significance' and '*')__
-
-# In[382]:
-
-
 _filter= data.loc[(data.AsConcentration== 0) &
                   (data.Significance.isin(['', '*'])),
                   'Strain']
 filtered_data= data.loc[data.Strain.isin(_filter)]
-
-
-# In[546]:
-
-
 plot(filtered_data,
      width= 45,
      height= 15,
@@ -1141,30 +1039,16 @@ plot(filtered_data,
 # #### __SGA mutants__
 
 # __full dataset__
-
-# In[516]:
-
-
 plot(data_sga,
      width= 45,
      height= 15,
      significance_symbol_size= 25,
      x_offset= 0.09,
      export= False)
-
-
-# In[387]:
-
-
 _filter_sga= data_sga.loc[(data_sga.AsConcentration== 0) &
                           (data_sga.Significance.isin(['', '*'])),
                           'Strain']
 filtered_data_sga= data_sga.loc[data_sga.Strain.isin(_filter_sga)]
-
-
-# In[550]:
-
-
 plot(filtered_data_sga,
      width= 45,
      height= 15,
@@ -1184,10 +1068,6 @@ plot(filtered_data_sga,
 # #### __data prep__
 
 # __TS alleles__
-
-# In[393]:
-
-
 #pivot around the As concentration
 data_for_clustering_ts= data.pivot_table(index= 'Strain',
                                          columns= 'AsConcentration',
@@ -1209,10 +1089,6 @@ _1mM_data_for_clustering_normalized_ts= normalize_numerical_columns(_1mM_data_fo
 
 
 # __SGA mutants__
-
-# In[395]:
-
-
 #pivot around the As concentration
 data_for_clustering_sga= data_sga.pivot_table(index= 'Strain',
                                               columns= 'AsConcentration',
@@ -1238,33 +1114,17 @@ _1mM_data_for_clustering_normalized_sga= normalize_numerical_columns(_1mM_data_f
 # __k-means__
 
 # * __0.5 mM arsenic__
-
-# In[399]:
-
-
 #k optimization
 elbow_plot_individual_datasets(_05mM_data_for_clustering_normalized_ts.iloc[:, 0:2],
                                _05mM_data_for_clustering_normalized_sga.iloc[:, 0:2])
-
-
-# In[400]:
-
 
 #clustering TS data
 k_means_clustered_ts_05= k_means(_05mM_data_for_clustering_normalized_ts.iloc[:, 0:2], k= 4)
 # k_means_clustered_ts_05
 
-
-# In[401]:
-
-
 #clustering SGA data
 k_means_clustered_sga_05= k_means(_05mM_data_for_clustering_normalized_sga.iloc[:, 0:2], k= 4)
 # k_means_clustered_sga_05
-
-
-# In[402]:
-
 
 #visuals
 visualize_clusters_individual_datasets(k_means_clustered_ts_05, _05mM_data_for_clustering_ts.iloc[:, -2], _05mM_data_for_clustering_ts.iloc[:, -1],
@@ -1272,33 +1132,17 @@ visualize_clusters_individual_datasets(k_means_clustered_ts_05, _05mM_data_for_c
 
 
 # * __1 mM arsenic__
-
-# In[404]:
-
-
 #k optimization
 elbow_plot_individual_datasets(_1mM_data_for_clustering_normalized_ts.iloc[:, 0:2],
                                _1mM_data_for_clustering_normalized_sga.iloc[:, 0:2])
-
-
-# In[405]:
-
 
 #clustering TS data
 k_means_clustered_ts_1= k_means(_1mM_data_for_clustering_normalized_ts.iloc[:, 0:2], k= 5)
 # k_means_clustered_ts_1
 
-
-# In[406]:
-
-
 #clustering SGA data
 k_means_clustered_sga_1= k_means(_1mM_data_for_clustering_normalized_sga.iloc[:, 0:2], k= 5)
 # k_means_clustered_sga_1
-
-
-# In[407]:
-
 
 #visuals
 visualize_clusters_individual_datasets(k_means_clustered_ts_1, _1mM_data_for_clustering_ts.iloc[:, -2], _1mM_data_for_clustering_ts.iloc[:, -1],
@@ -1308,10 +1152,6 @@ visualize_clusters_individual_datasets(k_means_clustered_ts_1, _1mM_data_for_clu
 # #### __joint datasets__
 
 # __concatenate normalized TS and SGA datasets__
-
-# In[410]:
-
-
 _0_5mM_data_for_clustering= pd.concat([_05mM_data_for_clustering_normalized_ts, _05mM_data_for_clustering_normalized_sga], axis= 0)
 _0_5mM_data_for_clustering= _0_5mM_data_for_clustering.groupby(_0_5mM_data_for_clustering.index).mean() #average possible duplicates in analysed strains 
 _1mM_data_for_clustering= pd.concat([_1mM_data_for_clustering_normalized_ts, _1mM_data_for_clustering_normalized_sga], axis= 0)
@@ -1321,42 +1161,16 @@ _1mM_data_for_clustering= _1mM_data_for_clustering.groupby(_1mM_data_for_cluster
 # __k-means__
 
 # * __0.5 mM arsenic__
-
-# In[413]:
-
-
 elbow_plot(_0_5mM_data_for_clustering.iloc[:, 0:2])
-
-
-# In[538]:
-
 
 visualize_clusters(k_means_clustered, _0_5mM_data_for_clustering.iloc[:, -2], _0_5mM_data_for_clustering.iloc[:, -1])
 
 
 # * __1 mM arsenic__
-
-# In[417]:
-
-
 elbow_plot(_1mM_data_for_clustering.iloc[:, 0:2])
-
-
-# In[418]:
-
 
 k_means_clustered2= k_means(_1mM_data_for_clustering.iloc[:, 0:2], k= 5)
 # k_means_clustered2
-
-
-# In[ ]:
-
-
-
-
-
-# In[542]:
-
 
 visualize_clusters(k_means_clustered2, _1mM_data_for_clustering.iloc[:, -2], _1mM_data_for_clustering.iloc[:, -1], export= False)
 
@@ -1364,49 +1178,20 @@ visualize_clusters(k_means_clustered2, _1mM_data_for_clustering.iloc[:, -2], _1m
 # __DBSCAN__
 
 # * __0.5 mM arsenic__
-
-# In[422]:
-
-
 DBSCAN_param_opt(_0_5mM_data_for_clustering.iloc[:, 0:2], no_of_combinations= 20, min_eps=0.1, max_eps=1, min_min_samples=3, max_min_samples=10).head(3)
-
-
-# In[480]:
-
 
 dbscan_clustered= dbscan(_0_5mM_data_for_clustering.iloc[:, 0:2], epsilon= 0.24, no_of_points= 6)
 # dbscan_clustered
-
-
-# In[482]:
-
 
 visualize_clusters(dbscan_clustered, _0_5mM_data_for_clustering.iloc[:, -2], _0_5mM_data_for_clustering.iloc[:, -1])
 
 
 # * __1mM arsenic__
-
-# In[426]:
-
-
 DBSCAN_param_opt(_1mM_data_for_clustering.iloc[:, 0:2], no_of_combinations= 20, min_eps=0.1, max_eps=1, min_min_samples=3, max_min_samples=10).head(3)
-
-
-# In[484]:
-
 
 dbscan_clustered2= dbscan(_1mM_data_for_clustering.iloc[:, 0:2], epsilon= 0.15, no_of_points= 6)
 # dbscan_clustered2
 
-
-# In[486]:
-
-
 visualize_clusters(dbscan_clustered2, _1mM_data_for_clustering.iloc[:, -2], _1mM_data_for_clustering.iloc[:, -1])
-
-
-# In[ ]:
-
-
 
 
